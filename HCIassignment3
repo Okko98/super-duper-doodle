@@ -1,0 +1,298 @@
+
+
+package nl.ru.ai.HCI.exercise1;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+public class ButtonPanel extends JPanel{
+	private DrawPanel dp;
+	public ButtonPanel(DrawPanel dp) {
+		super();
+		this.dp = dp;
+		JButton add = new JButton("add");
+		JButton mod = new JButton("mod");
+		JButton b = new JButton("Change color!");
+		add(b);
+    
+		add(add);
+		add(mod);
+		mod.addActionListener(new InputHandler(dp));
+	    add.addActionListener(new InputHandler(dp));
+		b.addActionListener(new InputHandler(dp));
+	}
+
+}
+
+
+package nl.ru.ai.HCI.exercise1;
+import java.awt.Graphics2D;
+
+public interface Drawable {
+	
+	public void draw(Graphics2D g);
+
+	//public void setCoordinates(double x1, double x2, double y1, double y2)
+	//{
+		//x1 = Math.random() * 390;
+		//x2 = x1 + 30;
+		//y1 = Math.random() * 320;
+		//y2 = y1 + 30;
+	//}
+
+}
+
+package nl.ru.ai.HCI.exercise1;
+import java.awt.Graphics2D;
+
+public interface Drawable {
+	
+	public void draw(Graphics2D g);
+
+	//public void setCoordinates(double x1, double x2, double y1, double y2)
+	//{
+		//x1 = Math.random() * 390;
+		//x2 = x1 + 30;
+		//y1 = Math.random() * 320;
+		//y2 = y1 + 30;
+	//}
+
+}
+package nl.ru.ai.HCI.exercise1;
+
+import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JColorChooser;
+
+public class InputHandler implements ActionListener {
+	DrawPanel dp;
+	public InputHandler(DrawPanel dp){
+		this.dp = dp;
+	}
+	
+     
+	public void actionPerformed(ActionEvent e) 
+	{ 
+			
+		if(e.getActionCommand().equals("Change color!"))
+		{
+		  int r = (int) (Math.random()*255);
+		  int g = (int) (Math.random()*255);
+		  int b = (int) (Math.random()*255);
+		  Color color = new Color(r, g, b);
+		  dp.changeColor(color);
+		  dp.repaint();
+		}
+		else if(e.getActionCommand().equals("add"))
+		{
+			System.out.println("the add button was pressed");
+			dp.addRandomShape();
+		}
+		else if(e.getActionCommand().equals("mod"))
+		{
+			System.out.println("the mod button was pressed");
+			dp.alterNextShape();
+		}
+	}
+
+}
+package nl.ru.ai.HCI.exercise1;
+
+import javax.swing.SwingUtilities;
+
+public class Main {
+
+	public static void main(String... args) {
+		SwingUtilities.invokeLater(new Runnable() { 
+			
+			public void run() { 
+				new Window(); 
+			} 
+		});
+	}
+}
+
+package nl.ru.ai.HCI.exercise1;
+import java.awt.Graphics2D;
+import java.awt.geom.Ellipse2D;
+
+public class MyEllipse implements Drawable
+{
+		private double x1, x2, y1, y2;
+		
+		public MyEllipse() 
+		{
+		}
+		
+		public MyEllipse(double x1, double y1, double x2, double y2) 
+		{
+			this.x1 = x1;
+			this.y1 = y1;
+			this.x2 = x2;
+			this.y2 = y2;
+		}
+		
+		@Override
+		public void draw(Graphics2D g) {
+			double x = getStartX();
+			double y = getStartY();
+			double width = getWidth();
+			double height = getHeight();
+			Ellipse2D r = new Ellipse2D.Double(x, y, width, height);
+			g.draw(r);
+		}
+		
+		private double getWidth() {
+			return Math.abs(x1 - x2);
+		}
+
+		private double getHeight() {
+			return Math.abs(y1 - y2);
+		}
+
+		private double getStartX() {
+			return Math.min(x1, x2);
+		}
+
+		private double getStartY() {
+			return Math.min(y1, y2);
+		}
+
+
+	}
+
+
+package nl.ru.ai.HCI.exercise1;
+import java.awt.Graphics2D;
+import java.awt.geom.Line2D;
+import java.awt.geom.Rectangle2D;
+
+public class MyLine implements Drawable {
+	
+	private double x1, x2, y1, y2;
+	
+	public MyLine() 
+	{
+	}
+	
+	public MyLine(double x1, double y1, double x2, double y2) 
+	{
+		this.x1 = x1;
+		this.y1 = y1;
+		this.x2 = x2;
+		this.y2 = y2;
+	}
+	
+	@Override
+	public void draw(Graphics2D g) {
+		double x = getStartX();
+		double y = getStartY();
+		double width = getWidth();
+		double height = getHeight();
+		Line2D r = new Line2D.Double(x, y, width, height);
+		g.draw(r);
+	}
+	
+	private double getWidth() {
+		return Math.abs(x1 - x2);
+	}
+
+	private double getHeight() {
+		return Math.abs(y1 - y2);
+	}
+
+	private double getStartX() {
+		return Math.min(x1, x2);
+	}
+
+	private double getStartY() {
+		return Math.min(y1, y2);
+	}
+
+
+}
+
+package nl.ru.ai.HCI.exercise1;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
+
+public class MyRectangle implements Drawable {
+
+	private double x1, y1, x2, y2;
+
+	public MyRectangle() 
+	{
+	}
+
+	public MyRectangle(double x1, double y1, double x2, double y2) 
+	{
+		this.x1 = x1;
+		this.y1 = y1;
+		this.x2 = x2;
+		this.y2 = y2;
+	}
+
+	@Override
+	public void draw(Graphics2D g) {
+		double x = getStartX();
+		double y = getStartY();
+		double width = getWidth();
+		double height = getHeight();
+		Rectangle2D r = new Rectangle2D.Double(x, y, width, height);
+		g.draw(r);
+	}
+
+	private double getWidth() {
+		return Math.abs(x1 - x2);
+	}
+
+	private double getHeight() {
+		return Math.abs(y1 - y2);
+	}
+
+	private double getStartX() {
+		return Math.min(x1, x2);
+	}
+
+	private double getStartY() {
+		return Math.min(y1, y2);
+	}
+
+}
+package nl.ru.ai.HCI.exercise1;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+
+import javax.swing.JFrame;
+
+public class Window extends JFrame {
+	
+	public Window() {
+	// ‘super’ calls a function inherited from the parent class (JFrame) 
+	super(); 
+	setTitle("Callbacks"); 
+	setSize(new Dimension(420, 350)); 
+	// Make sure the window appears in the middle of your screen 
+	setLocationRelativeTo( null ); 
+	// Determines what should happen when the frame is closed 
+	setDefaultCloseOperation(EXIT_ON_CLOSE); 
+	// Chooses a certain layout type for the elements in this frame 
+	getContentPane().setLayout(new BorderLayout());
+	// TODO: add elements to the content pane
+	// Set the window to visible! Yup... This is necessary 
+	setVisible(true);
+	DrawPanel dp = new DrawPanel();
+	ButtonPanel bp = new ButtonPanel(dp);
+	
+	// Places the DrawPanel in the center of the frame 
+	getContentPane().add(dp, BorderLayout.CENTER); 
+	// Places the ButtonPanel in the top of the frame 
+	getContentPane().add(bp, BorderLayout.NORTH);
+
+	}
+
+	
+}
+
